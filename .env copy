@@ -1,0 +1,11 @@
+# Telegram API Bilgileri
+TELEGRAM_API_ID=27513648
+TELEGRAM_API_HASH=9dd45071546cda86ab0c57b4074f7307
+TELEGRAM_CHANNEL="-1001500918158"  # Binance Price Change 1m %1+
+TELEGRAM_PHONE=+905319978499
+# OpenAI API Bilgileri
+OPENAI_API_KEY=sk-Ue0Hs4Hs4Hs4Hs4Hs4Hs4Hs4Hs4Hs4Hs4Hs4Hs4
+
+# Binance API Bilgileri (şimdilik kullanılmıyor)
+#BINANCE_API_KEY=your_binance_api_key_here
+#BINANCE_API_SECRET=your_binance_api_secret_here

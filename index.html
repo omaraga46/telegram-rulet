@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Rulet</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="game-area">
+            <div class="rulet-table">
+                <div class="rulet-wheel">
+                    <div class="wheel-inner">
+                        <div class="ball"></div>
+                    </div>
+                </div>
+                <div class="betting-table">
+                    <div class="numbers-grid">
+                        <!-- 0-36 arası sayılar için grid -->
+                    </div>
+                    <div class="outside-bets">
+                        <div class="red-black">
+                            <button class="bet-button red">Kırmızı</button>
+                            <button class="bet-button black">Siyah</button>
+                        </div>
+                        <div class="odd-even">
+                            <button class="bet-button odd">Tek</button>
+                            <button class="bet-button even">Çift</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="player-info">
+                <div class="balance">Bakiye: <span id="balance">1000</span> ₺</div>
+                <div class="current-bet">Mevcut Bahis: <span id="current-bet">0</span> ₺</div>
+                <div class="bet-amount">
+                    <input type="number" id="bet-input" min="10" value="10">
+                    <button id="place-bet">Bahis Yap</button>
+                </div>
+                <button id="spin-button">Çevir</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
