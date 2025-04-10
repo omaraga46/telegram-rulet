@@ -78,29 +78,44 @@
             background: #111; /* Tekerlek arkaplanı */
         }
 
+       /* Bu stil bloğunu bulun ve güncelleyin */
         .number-slot {
             position: absolute;
-            top: 0; /* Merkezden başlayacak */
+            top: 0;
             left: 50%;
             width: var(--number-size);
-            height: 50%; /* Yarıçap kadar yükseklik */
-            transform-origin: bottom center; /* Alt ortadan dönecek */
-            margin-left: calc(var(--number-size) / -2); /* Genişliğin yarısı kadar sola */
-            display: flex;
-            justify-content: center;
-            padding-top: 10px; /* Sayıyı biraz aşağı it */
+            height: 50%;
+            transform-origin: bottom center;
+            margin-left: calc(var(--number-size) / -2);
+            display: flex;          /* Eklendi veya değiştirildi */
+            justify-content: center; /* Yatayda ortala */
+            align-items: flex-start;/* İçeriği (sayıyı) yukarı (dış kenara) yasla - EKLENDİ */
             box-sizing: border-box;
             font-weight: bold;
             color: white;
-            font-size: var(--number-font-size);
-            /* Klip yolu ile kama şekli verilebilir ama basitlik için kutu bırakalım */
-            /* clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%); */
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Segment ayrımı */
+            font-size: var(--number-font-size); /* Bu kalabilir veya span'a taşınabilir */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 0;         /* padding-top kaldırıldı veya 0 yapıldı */
+            overflow: hidden;       /* Taşan kısmı gizle - EKLENDİ */
         }
 
+        /* Bu stil bloğunu ekleyin veya güncelleyin */
+        .number-slot span {
+            display: inline-block; /* Transform için gerekli */
+            padding: 2px;          /* Sayı etrafında küçük boşluk */
+            /* background: rgba(0,0,0, 0.2); /* Okunabilirlik için hafif arka plan (isteğe bağlı) */
+            border-radius: 3px;
+            margin-top: 8px;       /* Dış kenardan uzaklığı ayarla (önceki padding-top yerine) - Değeri ayarlayabilirsiniz */
+            font-size: calc(var(--number-font-size) * 0.85); /* Yazı tipini biraz küçültelim - Değeri ayarlayabilirsiniz */
+            line-height: 1;        /* Satır yüksekliğini ayarla */
+            /* JavaScript ile eklenecek transform için transform-origin ayarlamak iyi olabilir */
+            transform-origin: center center;
+        }
+
+        /* Renk stilleri (.kırmızı, .siyah, .yeşil) aynı kalabilir */
         .number-slot.kırmızı { background-color: #c0392b; }
         .number-slot.siyah { background-color: #2c3e50; }
-        .number-slot.yeşil { background-color: #27ae60; }
+        .number-slot.yeşil { background-color: #27ae60; }   
 
         .wheel-center {
             position: absolute;
@@ -392,14 +407,19 @@
             const angle = index * anglePerSlot;
             const slot = document.createElement('div');
             slot.className = `number-slot ${data.color}`;
-            slot.style.transform = `rotate(${angle}deg)`;
-            slot.dataset.number = data.number; // Veriyi sakla
+            slot.style.transform = `rotate(${angle}deg)`; // Bu satır aynı kalıyor
+            slot.dataset.number = data.number;
             slot.dataset.color = data.color;
 
             const numberSpan = document.createElement('span');
-             // Sayıyı içeri doğru döndürmek için (isteğe bağlı)
-            numberSpan.style.transform = `rotate(-90deg) translateY(-15px)`;
-            numberSpan.style.display = 'inline-block'; // Transform için
+
+            // --- BU SATIRI DEĞİŞTİRİN ---
+            // Önceki hali: numberSpan.style.transform = `rotate(-90deg) translateY(-15px)`;
+            // YENİ HALİ: Sayıyı dilimin tersi yönde döndürerek düz durmasını sağla
+            numberSpan.style.transform = `rotate(-${angle}deg)`;
+            // --- DEĞİŞİKLİK SONU ---
+
+            numberSpan.style.display = 'inline-block'; // Bu kalsın
             numberSpan.textContent = data.number;
             slot.appendChild(numberSpan);
 
