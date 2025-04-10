@@ -4,13 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telegram Rulet</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --tg-theme-bg-color: #ffffff;
+            --tg-theme-text-color: #000000;
+            --tg-theme-hint-color: #999999;
+            --tg-theme-link-color: #2481cc;
+            --tg-theme-button-color: #2481cc;
+            --tg-theme-button-text-color: #ffffff;
+            --tg-theme-secondary-bg-color: #f0f0f0;
+        }
+
         body {
             margin: 0;
             padding: 0;
-            background: #1a1a1a;
-            color: white;
-            font-family: Arial, sans-serif;
+            background: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             overflow: hidden;
         }
 
@@ -21,6 +32,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .rulet-container {
@@ -34,10 +47,11 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: #2d2d2d;
+            background: var(--tg-theme-secondary-bg-color);
             position: relative;
             overflow: hidden;
             transition: transform 5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
         }
 
         .rulet-number {
@@ -50,45 +64,52 @@
             justify-content: center;
             font-size: 14px;
             font-weight: bold;
+            color: var(--tg-theme-button-text-color);
         }
 
         .ball {
             width: 20px;
             height: 20px;
-            background: white;
+            background: var(--tg-theme-button-text-color);
             border-radius: 50%;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 10;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
 
         .controls {
             margin-top: 20px;
             display: flex;
             gap: 10px;
+            width: 100%;
+            max-width: 300px;
         }
 
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 5px;
-            background: #4CAF50;
-            color: white;
+            border-radius: 10px;
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
+            flex: 1;
+            font-size: 16px;
         }
 
         button:hover {
-            background: #45a049;
-            transform: scale(1.05);
+            opacity: 0.9;
+            transform: scale(1.02);
         }
 
         button:disabled {
-            background: #666;
+            background: var(--tg-theme-hint-color);
             cursor: not-allowed;
+            transform: none;
         }
 
         .bet-amount {
@@ -96,24 +117,45 @@
             display: flex;
             gap: 10px;
             align-items: center;
+            width: 100%;
+            max-width: 300px;
         }
 
         input[type="number"] {
             width: 100px;
-            padding: 10px;
-            border-radius: 5px;
-            border: none;
-            background: #333;
-            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid var(--tg-theme-secondary-bg-color);
+            background: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            font-size: 16px;
         }
 
         .balance {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(0,0,0,0.7);
-            padding: 10px;
-            border-radius: 5px;
+            background: var(--tg-theme-secondary-bg-color);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 400px) {
+            .rulet-container {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .rulet-number {
+                font-size: 12px;
+            }
+            
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -138,6 +180,22 @@
     </div>
 
     <script>
+        // Telegram WebApp başlatma
+        const webApp = window.Telegram.WebApp;
+        webApp.ready();
+        webApp.expand();
+
+        // Tema değişikliklerini dinle
+        webApp.onEvent('themeChanged', () => {
+            document.documentElement.style.setProperty('--tg-theme-bg-color', webApp.backgroundColor);
+            document.documentElement.style.setProperty('--tg-theme-text-color', webApp.textColor);
+            document.documentElement.style.setProperty('--tg-theme-hint-color', webApp.hintColor);
+            document.documentElement.style.setProperty('--tg-theme-link-color', webApp.linkColor);
+            document.documentElement.style.setProperty('--tg-theme-button-color', webApp.buttonColor);
+            document.documentElement.style.setProperty('--tg-theme-button-text-color', webApp.buttonTextColor);
+            document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', webApp.secondaryBackgroundColor);
+        });
+
         // Oyun durumu
         let balance = 1000;
         let currentBet = 0;
@@ -174,13 +232,14 @@
         function placeBet() {
             const betAmount = parseInt(document.getElementById('betAmount').value);
             if (betAmount > balance) {
-                alert('Yetersiz bakiye!');
+                webApp.showAlert('Yetersiz bakiye!');
                 return;
             }
             currentBet = betAmount;
             balance -= betAmount;
             updateUI();
             document.getElementById('spinButton').disabled = false;
+            webApp.HapticFeedback.impactOccurred('light');
         }
 
         // Çarkı çevir
@@ -194,6 +253,7 @@
             const rotation = 3600 + winningNumber * (360/37);
 
             wheel.style.transform = `rotate(${rotation}deg)`;
+            webApp.HapticFeedback.notificationOccurred('success');
 
             setTimeout(() => {
                 checkWin(winningNumber);
@@ -211,7 +271,14 @@
             }
             balance += kazanc;
             updateUI();
-            alert(kazanc > 0 ? `Tebrikler! ${kazanc}₺ kazandın!` : 'Maalesef kazanamadın.');
+            
+            if (kazanc > 0) {
+                webApp.showAlert(`Tebrikler! ${kazanc}₺ kazandın!`);
+                webApp.HapticFeedback.notificationOccurred('success');
+            } else {
+                webApp.showAlert('Maalesef kazanamadın.');
+                webApp.HapticFeedback.notificationOccurred('error');
+            }
         }
 
         // UI güncelleme
@@ -229,6 +296,7 @@
                 currentBet = 0;
                 updateUI();
                 document.getElementById('spinButton').disabled = true;
+                webApp.HapticFeedback.impactOccurred('light');
             }
         });
 
@@ -236,6 +304,15 @@
         window.onload = () => {
             createWheel();
             updateUI();
+            
+            // Tema renklerini ayarla
+            document.documentElement.style.setProperty('--tg-theme-bg-color', webApp.backgroundColor);
+            document.documentElement.style.setProperty('--tg-theme-text-color', webApp.textColor);
+            document.documentElement.style.setProperty('--tg-theme-hint-color', webApp.hintColor);
+            document.documentElement.style.setProperty('--tg-theme-link-color', webApp.linkColor);
+            document.documentElement.style.setProperty('--tg-theme-button-color', webApp.buttonColor);
+            document.documentElement.style.setProperty('--tg-theme-button-text-color', webApp.buttonTextColor);
+            document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', webApp.secondaryBackgroundColor);
         };
     </script>
 </body>
