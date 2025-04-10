@@ -1,5 +1,6 @@
 import logging
 import random
+import asyncio
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, CallbackQueryHandler
 
@@ -30,32 +31,17 @@ RENKLER = {
 # Kullanıcı verileri
 kullanici_verileri = {}
 
-def create_rulet_keyboard():
-    """Rulet masası için klavye oluşturur"""
+def create_rulet_keyboard() -> InlineKeyboardMarkup:
+    """Rulet için klavye oluşturur"""
     keyboard = []
     row = []
-    
-    # 0-36 arası sayılar için butonlar
     for i in range(37):
-        row.append(InlineKeyboardButton(f"{i}{RENKLER[i]}", callback_data=f"sayi_{i}"))
-        if (i + 1) % 6 == 0:
+        if i % 6 == 0 and row:
             keyboard.append(row)
             row = []
-    
-    # Dış bahisler için butonlar
-    keyboard.append([
-        InlineKeyboardButton("🔴 Kırmızı", callback_data="renk_kirmizi"),
-        InlineKeyboardButton("⚫️ Siyah", callback_data="renk_siyah")
-    ])
-    keyboard.append([
-        InlineKeyboardButton("1️⃣ Tek", callback_data="tek"),
-        InlineKeyboardButton("2️⃣ Çift", callback_data="cift")
-    ])
-    keyboard.append([
-        InlineKeyboardButton("🔄 Çevir", callback_data="cevir"),
-        InlineKeyboardButton("❌ İptal", callback_data="iptal")
-    ])
-    
+        row.append(InlineKeyboardButton(str(i), callback_data=f"rulet_{i}"))
+    if row:
+        keyboard.append(row)
     return InlineKeyboardMarkup(keyboard)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -96,7 +82,7 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     
     data = query.data
     
-    if data.startswith("sayi_"):
+    if data.startswith("rulet_"):
         # Sayı seçimi
         sayi = int(data.split("_")[1])
         kullanici_verileri[user_id]['aktif_bahis'] = {
