@@ -46,8 +46,8 @@
             border-radius: 50%;
             overflow: hidden;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            background: #f8f8f8;
-            border: 10px solid #2c3e50;
+            background: #1a1a1a;
+            border: 15px solid #2c3e50;
         }
 
         .rulet {
@@ -57,21 +57,7 @@
             border-radius: 50%;
             transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
             transform-origin: center;
-            background: conic-gradient(
-                #e74c3c 0% 2.7%, #2c3e50 2.7% 5.4%, #e74c3c 5.4% 8.1%,
-                #2c3e50 8.1% 10.8%, #e74c3c 10.8% 13.5%, #2c3e50 13.5% 16.2%,
-                #e74c3c 16.2% 18.9%, #2c3e50 18.9% 21.6%, #e74c3c 21.6% 24.3%,
-                #2c3e50 24.3% 27%, #e74c3c 27% 29.7%, #2c3e50 29.7% 32.4%,
-                #e74c3c 32.4% 35.1%, #2c3e50 35.1% 37.8%, #e74c3c 37.8% 40.5%,
-                #2c3e50 40.5% 43.2%, #e74c3c 43.2% 45.9%, #2c3e50 45.9% 48.6%,
-                #e74c3c 48.6% 51.3%, #2c3e50 51.3% 54%, #e74c3c 54% 56.7%,
-                #2c3e50 56.7% 59.4%, #e74c3c 59.4% 62.1%, #2c3e50 62.1% 64.8%,
-                #e74c3c 64.8% 67.5%, #2c3e50 67.5% 70.2%, #e74c3c 70.2% 72.9%,
-                #2c3e50 72.9% 75.6%, #e74c3c 75.6% 78.3%, #2c3e50 78.3% 81%,
-                #e74c3c 81% 83.7%, #2c3e50 83.7% 86.4%, #e74c3c 86.4% 89.1%,
-                #2c3e50 89.1% 91.8%, #e74c3c 91.8% 94.5%, #2c3e50 94.5% 97.2%,
-                #e74c3c 97.2% 100%
-            );
+            background: #1a1a1a;
         }
 
         .rulet.rotating {
@@ -81,6 +67,33 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(var(--rotation)); }
+        }
+
+        .rulet-numara {
+            position: absolute;
+            width: 40px;
+            height: 120px;
+            transform-origin: bottom center;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 10px;
+            font-weight: bold;
+            color: white;
+            font-size: 16px;
+            clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%);
+        }
+
+        .rulet-numara.kırmızı {
+            background: linear-gradient(to bottom, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .rulet-numara.siyah {
+            background: linear-gradient(to bottom, #34495e 0%, #2c3e50 100%);
+        }
+
+        .rulet-numara.yeşil {
+            background: linear-gradient(to bottom, #27ae60 0%, #219a52 100%);
         }
 
         .top {
@@ -108,32 +121,15 @@
             transform: translate(-50%, -50%);
         }
 
-        .rulet-numara {
+        .ibre {
             position: absolute;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            transform-origin: center;
-            transform: rotate(calc(var(--angle) * 1deg)) translate(135px) rotate(calc(var(--angle) * -1deg));
-        }
-
-        .rulet-numara.yeşil {
-            background: #2ecc71;
-            border-radius: 50%;
-        }
-
-        .rulet-numara.kırmızı {
-            background: #e74c3c;
-            border-radius: 50%;
-        }
-
-        .rulet-numara.siyah {
-            background: #2c3e50;
-            border-radius: 50%;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 20px;
+            background: #fff;
+            transform-origin: bottom;
+            z-index: 3;
         }
 
         .controls {
@@ -272,36 +268,29 @@
         let isSpinning = false;
 
         // Rulet numaralarını oluştur
-        const colors = {
-            0: '#2ecc71', // Yeşil
-            1: '#e74c3c', 2: '#2c3e50', 3: '#e74c3c', 4: '#2c3e50', 5: '#e74c3c',
-            6: '#2c3e50', 7: '#e74c3c', 8: '#2c3e50', 9: '#e74c3c', 10: '#2c3e50',
-            11: '#2c3e50', 12: '#e74c3c', 13: '#2c3e50', 14: '#e74c3c', 15: '#2c3e50',
-            16: '#e74c3c', 17: '#2c3e50', 18: '#e74c3c', 19: '#e74c3c', 20: '#2c3e50',
-            21: '#e74c3c', 22: '#2c3e50', 23: '#e74c3c', 24: '#2c3e50', 25: '#e74c3c',
-            26: '#2c3e50', 27: '#e74c3c', 28: '#2c3e50', 29: '#2c3e50', 30: '#e74c3c',
-            31: '#2c3e50', 32: '#e74c3c', 33: '#2c3e50', 34: '#e74c3c', 35: '#2c3e50',
-            36: '#e74c3c'
-        };
-
-        // Rulet numaralarını yerleştir
         const wheel = document.getElementById('wheel');
         for (let i = 0; i <= 36; i++) {
             const number = document.createElement('div');
             number.className = 'rulet-numara';
             number.textContent = i;
-            number.style.setProperty('--angle', (i * 9.73).toFixed(2));
+            const angle = i * (360 / 37);
+            number.style.transform = `rotate(${angle}deg)`;
             
             if (i === 0) {
                 number.classList.add('yeşil');
-            } else if (colors[i] === '#e74c3c') {
-                number.classList.add('kırmızı');
-            } else {
+            } else if (i % 2 === 0) {
                 number.classList.add('siyah');
+            } else {
+                number.classList.add('kırmızı');
             }
             
             wheel.appendChild(number);
         }
+
+        // İbre ekle
+        const ibre = document.createElement('div');
+        ibre.className = 'ibre';
+        document.querySelector('.rulet-container').appendChild(ibre);
 
         function updateBalance() {
             document.getElementById('balance').textContent = balance;
