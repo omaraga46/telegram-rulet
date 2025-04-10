@@ -72,7 +72,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Web App butonu oluştur
     keyboard = [[InlineKeyboardButton(
         "🎰 Rulet Oyununu Başlat",
-        web_app=WebAppInfo(url="https://your-github-username.github.io/your-repo-name/rulet.html")  # GitHub Pages URL'si
+        web_app=WebAppInfo(url="https://YOUR-GITHUB-USERNAME.github.io/telegram-rulet/rulet.html")  # GitHub Pages URL'si
     )]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     
