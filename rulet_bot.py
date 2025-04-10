@@ -55,19 +55,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             'aktif_bahis': None
         }
     
-    # Web App butonu oluştur
-    keyboard = [[InlineKeyboardButton(
-        "🎰 Rulet Oyununu Başlat",
-        web_app=WebAppInfo(url="https://omaraga46.github.io/telegram-rulet/rulet.html")  # GitHub Pages URL'si
-    )]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    
     await update.message.reply_text(
-        f"🎰 Rulet Oyununa Hoş Geldin {user.first_name}!\n\n"
-        f"💰 Bakiye: {kullanici_verileri[user_id]['bakiye']}₺\n"
-        f"🎲 Bahis: {SABİT_BAHİS_MİKTARI}₺\n\n"
-        f"Oyunu başlatmak için aşağıdaki butona tıkla!",
-        reply_markup=reply_markup
+        "Hoş geldiniz! Rulet oyununu başlatmak için aşağıdaki butona tıklayın.",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[
+            InlineKeyboardButton(
+                text="🎰 Rulet Oyunu",
+                web_app=WebAppInfo(url="https://omaraga46.github.io/telegram-rulet/rulet.html")
+            )
+        ]])
     )
 
 async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
