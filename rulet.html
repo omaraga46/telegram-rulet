@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Telegram Rulet V2</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Telegram Rulet V3</title> <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --tg-theme-bg-color: #1a1a1a;
@@ -15,8 +14,8 @@
             --tg-theme-button-text-color: #ffffff;
             --tg-theme-secondary-bg-color: #2a2a2a;
             --wheel-size: 300px;
-            --number-size: 50px;
-            --number-font-size: 20px;
+            --number-slot-width: 40px; /* Dış çemberdeki sayı genişliği */
+            --number-font-size: 18px; /* Sayı font boyutu */
         }
 
         body {
@@ -59,13 +58,15 @@
             width: var(--wheel-size);
             height: var(--wheel-size);
             margin: 25px 0;
+            /* Dış ahşap kenarlık isteğe bağlı olarak kalabilir veya kaldırılabilir */
             border: 8px solid #4a2c0f;
             border-radius: 50%;
-            background: radial-gradient(circle, #6b4a2a 50%, #4a2c0f 100%);
+            background: #1D6A4A; /* Konteynerin arka planı da yeşil olabilir */
             box-shadow: inset 0 0 15px rgba(0,0,0,0.6), 0 5px 15px rgba(0,0,0,0.4);
             overflow: hidden;
         }
 
+        /* Ana dönen tekerlek (Artık sadece yeşil zemin) */
         .wheel {
             position: absolute;
             top: 0;
@@ -75,77 +76,70 @@
             border-radius: 50%;
             transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
             transform-origin: center center;
-            background: #111;
+            background-color: #1D6A4A; /* Koyu Yeşil Zemin */
+            /* overflow: hidden; */ /* İçindeki slotlar taşabilir */
         }
 
-       .number-slot {
+       /* Sayı dilimleri (Artık sadece konumlandırma için varlar, çok kısalar) */
+        .number-slot {
             position: absolute;
-            top: 0;
+            top: 0; /* Yukarıdan başla */
             left: 50%;
-            width: var(--number-size);
-            height: 50%;
+            /* Genişlik, sayının sığacağı kadar olmalı, belki % ile daha iyi olur? */
+            /* width: calc(3.14159 * var(--wheel-size) / 37); /* Yaklaşık dilim genişliği */
+             width: var(--number-slot-width); /* Sabit genişlik deneyelim */
+            height: 18%; /* Çok kısa yükseklik, dış çemberde kalır */
             transform-origin: bottom center;
-            margin-left: calc(var(--number-size) / -2);
+            margin-left: calc(var(--number-slot-width) / -2); /* Genişliğin yarısı kadar sola */
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            justify-content: center; /* Sayıyı yatayda ortala */
+            align-items: flex-start; /* Sayıyı yukarıya (dışa) yasla */
             box-sizing: border-box;
-            font-weight: bold;
-            color: white;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 0;
-            overflow: hidden;
+            overflow: visible; /* Span taşabilir */
+            /* Arka planı ve alt çizgisi yok */
+            /* background: none; */
+            /* border: none; */
         }
 
+        /* Sayı (span) stilleri (Renkli arka plan burada) */
         .number-slot span {
             display: inline-block;
-            padding: 2px;
-            border-radius: 3px;
-            margin-top: 8px;
-            font-size: calc(var(--number-font-size) * 0.85);
-            line-height: 1;
-            transform-origin: center center;
+            padding: 3px 6px;
+            border-radius: 4px;
+            margin-top: 5px; /* Dış kenardan ne kadar içeride olacağı */
+            font-size: calc(var(--number-font-size) * 0.80);
+            line-height: 1.1;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+            transform-origin: center center; /* Kendi ekseninde dönecek */
+            border: 1px solid rgba(0,0,0,0.3);
+            /* background-color JS ile atanacak */
+            /* transform: rotate(-angle) JS ile atanacak */
         }
 
-        .number-slot.kırmızı { background-color: #c0392b; }
-        .number-slot.siyah { background-color: #2c3e50; }
-        .number-slot.yeşil { background-color: #27ae60; }
+        /* Orta kısım için CSS kaldırıldı (.wheel-center) */
 
-        /* Orta kısım (Arka plan eklendi) */
-        .wheel-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 60px; /* Biraz büyüttük */
-            height: 60px; /* Biraz büyüttük */
-            background-color: #1D6A4A; /* Koyu yeşil tonu */
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            border: none;
-            z-index: 3;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5); /* İç gölge efekti */
-        }
-
-        /* Kazanan numara göstergesi (Arka planı kaldırıldı, direkt yeşil üzerine yazacak) */
+        /* Kazanan numara göstergesi (Direkt konteyner içinde ortalandı) */
         .winning-number-display {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 32px; /* Boyuta göre ayarlandı */
+            font-size: 40px;
             font-weight: bold;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9); /* Gölge belirginleştirildi */
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.8);
             z-index: 4;
             display: none;
-            background: transparent; /* Arka plan kaldırıldı */
-            padding: 0; /* Padding kaldırıldı */
-            border-radius: 0;
+            background: transparent;
+            padding: 0;
          }
 
+        /* İşaretçi */
         .pointer {
             position: absolute;
-            top: -5px;
+            top: -5px; /* Ahşap kenarlığın üzerinde */
             left: 50%;
             transform: translateX(-50%);
             width: 0;
@@ -153,11 +147,12 @@
             border-left: 15px solid transparent;
             border-right: 15px solid transparent;
             border-top: 25px solid #ffd700;
-            z-index: 5;
+            z-index: 5; /* En üstte */
             filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5));
         }
 
-        .controls {
+        /* --- Kontroller ve Diğer Stiller (Aynı kalabilir) --- */
+         .controls {
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -287,23 +282,25 @@
             box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
         }
 
+        /* Mobil medya sorgusu */
         @media (max-width: 400px) {
             :root {
                 --wheel-size: 250px;
-                --number-size: 40px;
-                --number-font-size: 18px;
+                --number-slot-width: 35px; /* Mobil için sayı genişliği */
+                --number-font-size: 16px; /* Mobil için font */
             }
             .bakiye { font-size: 18px; }
             .spin-button { font-size: 18px; padding: 12px 25px;}
             .bahis-input { font-size: 14px; padding: 10px;}
             .bet-option-button { font-size: 12px; padding: 10px 5px;}
             .sonuc { font-size: 14px; }
-            .wheel-center { width: 50px; height: 50px; } /* Mobil için merkez boyut */
-            .winning-number-display { font-size: 26px; }
-             .number-slot span {
-                 font-size: calc(var(--number-font-size) * 0.8);
-                 margin-top: 6px;
-             }
+            .number-slot { height: 18%; } /* Yükseklik aynı kalabilir veya ayarlanabilir */
+            .number-slot span {
+                font-size: calc(var(--number-font-size) * 0.75); /* Daha küçük font */
+                padding: 2px 4px;
+                margin-top: 4px; /* Mobil için boşluk */
+            }
+            .winning-number-display { font-size: 32px; }
         }
     </style>
 </head>
@@ -316,9 +313,9 @@
         <div class="wheel-container">
             <div class="wheel" id="wheel">
                 </div>
-            <div class="wheel-center"> <div class="winning-number-display" id="winning-number-display">?</div>
-            </div>
-            <div class="pointer"></div> </div>
+            <div class="pointer"></div>
+            <div class="winning-number-display" id="winning-number-display">?</div>
+        </div>
 
         <div class="controls">
             <div class="betting-options">
@@ -364,6 +361,7 @@
         const spinButton = document.getElementById('spin');
         const balanceDisplay = document.getElementById('balance');
         const resultDisplay = document.getElementById('result');
+        // Kazanan numara göstergesi artık .wheel-container içinde
         const winningNumberDisplay = document.getElementById('winning-number-display');
         const bettingOptionButtons = document.querySelectorAll('.bet-option-button');
 
@@ -392,53 +390,58 @@
         const totalNumbers = numbersData.length;
         const anglePerSlot = 360 / totalNumbers;
 
-        // Tekerleği Oluştur
+        // Tekerleği Oluştur (Güncellendi: Span'a renk eklendi)
         numbersData.forEach((data, index) => {
             const angle = index * anglePerSlot;
+            // Slot (dilim) sadece konumlandırma için kullanılıyor
             const slot = document.createElement('div');
-            slot.className = `number-slot ${data.color}`;
+            slot.className = `number-slot`;
             slot.style.transform = `rotate(${angle}deg)`;
-            slot.dataset.number = data.number;
-            slot.dataset.color = data.color;
+            // slot.dataset.number = data.number; // İsteğe bağlı, debug için
+            // slot.dataset.color = data.color; // İsteğe bağlı, debug için
 
+            // Sayı ve renkli arka planını taşıyan span
             const numberSpan = document.createElement('span');
             numberSpan.style.transform = `rotate(-${angle}deg)`; // Sayıyı düz tut
             numberSpan.style.display = 'inline-block';
             numberSpan.textContent = data.number;
-            slot.appendChild(numberSpan);
 
-            wheel.appendChild(slot);
+            // Span'a arka plan rengi ekle
+            if (data.color === 'kırmızı') {
+                numberSpan.style.backgroundColor = '#c0392b';
+            } else if (data.color === 'siyah') {
+                numberSpan.style.backgroundColor = '#2c3e50';
+            } else { // Yeşil için
+                numberSpan.style.backgroundColor = '#27ae60';
+            }
+
+            slot.appendChild(numberSpan);
+            wheel.appendChild(slot); // Slot'u (ve içindeki span'ı) tekerleğe ekle
         });
 
-        // Yardımcı Fonksiyonlar
+
+        // --- Yardımcı Fonksiyonlar ---
         function updateBalance() {
             balanceDisplay.textContent = balance;
         }
-
         function showResult(message, type = 'info') {
             resultDisplay.textContent = message;
             resultDisplay.className = `sonuc show ${type}`;
         }
-
         function hideResult() {
              resultDisplay.className = 'sonuc';
         }
-
-        // Kazanan numarayı ortadaki yeşil alanda gösterir
         function showWinningNumber(number, color) {
             winningNumberDisplay.textContent = number;
-            // Yazı rengini gelen renge göre ayarlayalım (yeşil hariç)
-             winningNumberDisplay.style.color = '#ffffff'; // Varsayılan beyaz
-             // winningNumberDisplay.style.color = color === 'yeşil' ? '#2ecc71' : (color === 'kırmızı' ? '#e74c3c' : '#ffffff'); // Opsiyonel: Sayı rengi
+            winningNumberDisplay.style.color = '#ffffff'; // Hep beyaz kalsın
             winningNumberDisplay.style.display = 'block';
         }
-
         function hideWinningNumber() {
             winningNumberDisplay.style.display = 'none';
         }
 
-        // Bahis Seçenekleri Yönetimi
-        bettingOptionButtons.forEach(button => {
+        // --- Bahis Seçenekleri Yönetimi ---
+         bettingOptionButtons.forEach(button => {
             button.addEventListener('click', () => {
                 if (isSpinning) return;
                 const betType = button.dataset.betType;
@@ -457,29 +460,29 @@
             });
         });
 
-        // Çevirme Mantığı
+        // --- Çevirme Mantığı ---
         spinButton.addEventListener('click', () => {
             if (isSpinning) return;
 
+            // Bahis kontrolleri...
             if (!selectedBetType) {
                 showResult('Lütfen bir bahis türü seçin!', 'kaybetti');
                 webApp.HapticFeedback.notificationOccurred('error');
                 return;
             }
-
             const bet = parseInt(betInput.value);
             if (isNaN(bet) || bet < 10) {
                 showResult('Geçerli bir bahis miktarı girin (Min 10₺)!', 'kaybetti');
                  webApp.HapticFeedback.notificationOccurred('error');
                 return;
             }
-
             if (bet > balance) {
                 showResult('Yetersiz bakiye!', 'kaybetti');
                  webApp.HapticFeedback.notificationOccurred('error');
                 return;
             }
 
+            // Oyun Başlıyor...
             isSpinning = true;
             spinButton.disabled = true;
             bettingOptionButtons.forEach(btn => btn.disabled = true);
@@ -490,20 +493,24 @@
             balance -= bet;
             updateBalance();
 
+            // Kazananı belirle...
             const winningIndex = Math.floor(Math.random() * totalNumbers);
             const winningData = numbersData[winningIndex];
             const winningNumber = winningData.number;
             const winningColor = winningData.color;
 
+            // Hedef açıyı hesapla...
             const randomOffset = (Math.random() - 0.5) * anglePerSlot * 0.8;
             const numberOfSpins = 5 + Math.floor(Math.random() * 5);
             const targetAngle = -(winningIndex * anglePerSlot + anglePerSlot / 2) + randomOffset;
             const totalRotation = currentAngle + (numberOfSpins * 360) + (targetAngle - (currentAngle % 360));
 
+            // Döndür...
             wheel.style.transition = 'transform 5s cubic-bezier(0.2, 0.8, 0.2, 1)';
             wheel.style.transform = `rotate(${totalRotation}deg)`;
             currentAngle = totalRotation;
 
+            // Titreşim...
             let intervalCount = 0;
             const vibrationInterval = setInterval(() => {
                 webApp.HapticFeedback.selectionChanged();
@@ -511,13 +518,14 @@
                 if(intervalCount > 40) clearInterval(vibrationInterval);
             }, 100);
 
+            // Sonucu göster...
             setTimeout(() => {
                  clearInterval(vibrationInterval);
                  showWinningNumber(winningNumber, winningColor); // Kazananı ortada göster
 
+                // Kazanma mantığı...
                 let isWin = false;
                 let winMultiplier = 0;
-
                 if (winningNumber === 0) {
                     if (selectedBetType === 'yeşil') { isWin = true; winMultiplier = 35; }
                 } else {
@@ -528,6 +536,7 @@
                     else if (selectedBetType === 'çift' && isEven) { isWin = true; winMultiplier = 2; }
                 }
 
+                // Sonuç mesajı ve bakiye güncelleme...
                 if (isWin) {
                     const winAmount = bet * winMultiplier;
                     balance += winAmount;
@@ -537,7 +546,6 @@
                     showResult(`😢 ${winningNumber} (${winningColor.charAt(0).toUpperCase() + winningColor.slice(1)}). Kaybettiniz: ${bet}₺`, 'kaybetti');
                      webApp.HapticFeedback.notificationOccurred('warning');
                 }
-
                 updateBalance();
                 isSpinning = false;
                 spinButton.disabled = false;
@@ -546,11 +554,12 @@
             }, 5100);
         });
 
-        // Başlangıç Durumu
+        // --- Başlangıç Durumu ---
         updateBalance();
         resultDisplay.textContent = 'Bahis türü seçip çevirin!';
         resultDisplay.className = 'sonuc show info';
 
+        // --- Sayfa Yüklendiğinde ---
         window.onload = () => {
             updateBalance();
             applyThemeColors();
