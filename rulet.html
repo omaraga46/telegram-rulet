@@ -7,16 +7,16 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --tg-theme-bg-color: #1a1a1a; /* Koyu tema varsayılan */
+            --tg-theme-bg-color: #1a1a1a;
             --tg-theme-text-color: #ffffff;
             --tg-theme-hint-color: #aaaaaa;
             --tg-theme-link-color: #5e9de0;
             --tg-theme-button-color: #3e83e0;
             --tg-theme-button-text-color: #ffffff;
             --tg-theme-secondary-bg-color: #2a2a2a;
-            --wheel-size: 300px; /* Rulet tekerleği boyutu */
-            --number-size: 50px; /* Sayı kutusu genişliği (dilim genişliğini etkiler) */
-            --number-font-size: 20px; /* Sayı yazı tipi boyutu (span içinde ayarlanacak) */
+            --wheel-size: 300px;
+            --number-size: 50px;
+            --number-font-size: 20px;
         }
 
         body {
@@ -28,15 +28,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between; /* İçeriği dikeyde yay */
+            justify-content: space-between;
             min-height: 100vh;
             box-sizing: border-box;
-            overflow-y: auto; /* Gerekirse dikey kaydırma */
+            overflow-y: auto;
         }
 
         .container {
             width: 100%;
-            max-width: 450px; /* Maksimum genişlik */
+            max-width: 450px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -45,7 +45,7 @@
         .bakiye {
             font-size: 22px;
             font-weight: 600;
-            color: #ffd700; /* Altın rengi */
+            color: #ffd700;
             margin-bottom: 15px;
             background: rgba(0, 0, 0, 0.3);
             padding: 8px 15px;
@@ -59,11 +59,11 @@
             width: var(--wheel-size);
             height: var(--wheel-size);
             margin: 25px 0;
-            border: 8px solid #4a2c0f; /* Ahşap görünümlü kenar */
+            border: 8px solid #4a2c0f;
             border-radius: 50%;
-            background: radial-gradient(circle, #6b4a2a 50%, #4a2c0f 100%); /* Ahşap iç */
+            background: radial-gradient(circle, #6b4a2a 50%, #4a2c0f 100%);
             box-shadow: inset 0 0 15px rgba(0,0,0,0.6), 0 5px 15px rgba(0,0,0,0.4);
-            overflow: hidden; /* Dışarı taşanları gizle */
+            overflow: hidden;
         }
 
         .wheel {
@@ -73,81 +73,76 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1); /* Yumuşak dönüş */
+            transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
             transform-origin: center center;
-            background: #111; /* Tekerlek arkaplanı */
+            background: #111;
         }
 
-       /* Sayı dilimi stilleri (Güncellendi) */
-        .number-slot {
+       .number-slot {
             position: absolute;
             top: 0;
             left: 50%;
-            width: var(--number-size); /* Dilimin genişliğini belirler */
-            height: 50%; /* Yarıçap kadar yükseklik */
-            transform-origin: bottom center; /* Alt ortadan dönecek */
-            margin-left: calc(var(--number-size) / -2); /* Genişliğin yarısı kadar sola */
+            width: var(--number-size);
+            height: 50%;
+            transform-origin: bottom center;
+            margin-left: calc(var(--number-size) / -2);
             display: flex;
-            justify-content: center; /* Sayıyı yatayda ortala */
-            align-items: flex-start; /* Sayıyı dilimin üstüne (dış kenara) yasla */
+            justify-content: center;
+            align-items: flex-start;
             box-sizing: border-box;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Dilimler arası çizgi */
-            padding-top: 0; /* Üst boşluk kaldırıldı */
-            overflow: hidden; /* Sayı taşarsa gizle */
-            /* Aşağıdaki font ve renkler span'a taşınabilir veya burada kalabilir */
-             font-weight: bold;
-             color: white;
+            font-weight: bold;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 0;
+            overflow: hidden;
         }
 
-        /* Sayı (span) stilleri (Güncellendi) */
         .number-slot span {
-            display: inline-block; /* Transform için */
+            display: inline-block;
             padding: 2px;
             border-radius: 3px;
-            margin-top: 8px; /* Dış kenardan boşluk */
-            font-size: calc(var(--number-font-size) * 0.85); /* Ana font boyutundan biraz küçük */
-            line-height: 1; /* Satır yüksekliği */
-            transform-origin: center center; /* Kendi ekseninde dönecek */
-            /* JS tarafından transform: rotate(-angle) eklenecek */
+            margin-top: 8px;
+            font-size: calc(var(--number-font-size) * 0.85);
+            line-height: 1;
+            transform-origin: center center;
         }
 
-        /* Renk stilleri */
         .number-slot.kırmızı { background-color: #c0392b; }
         .number-slot.siyah { background-color: #2c3e50; }
         .number-slot.yeşil { background-color: #27ae60; }
 
-        /* Orta kısım (Görünmez yapıldı) */
+        /* Orta kısım (Arka plan eklendi) */
         .wheel-center {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 50px;
-            height: 50px;
-            background: transparent; /* Arka plan şeffaf */
+            width: 60px; /* Biraz büyüttük */
+            height: 60px; /* Biraz büyüttük */
+            background-color: #1D6A4A; /* Koyu yeşil tonu */
             border-radius: 50%;
             transform: translate(-50%, -50%);
-            border: none; /* Kenarlık kaldırıldı */
-            z-index: 3; /* İşaretçinin altında, dilimlerin üstünde */
+            border: none;
+            z-index: 3;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5); /* İç gölge efekti */
         }
 
-        /* Kazanan numara göstergesi (Hala ortada ama arka plansız görünecek) */
+        /* Kazanan numara göstergesi (Arka planı kaldırıldı, direkt yeşil üzerine yazacak) */
         .winning-number-display {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 36px;
+            font-size: 32px; /* Boyuta göre ayarlandı */
             font-weight: bold;
             color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-            z-index: 4; /* wheel-center'dan yüksek */
-            display: none; /* Başlangıçta gizli */
-            background: rgba(0,0,0,0.5); /* İsteğe bağlı: Hafif arka plan kalabilir */
-            padding: 5px 10px;
-            border-radius: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9); /* Gölge belirginleştirildi */
+            z-index: 4;
+            display: none;
+            background: transparent; /* Arka plan kaldırıldı */
+            padding: 0; /* Padding kaldırıldı */
+            border-radius: 0;
          }
 
-        /* İşaretçi (Ok) */
         .pointer {
             position: absolute;
             top: -5px;
@@ -158,11 +153,10 @@
             border-left: 15px solid transparent;
             border-right: 15px solid transparent;
             border-top: 25px solid #ffd700;
-            z-index: 5; /* En üstte */
+            z-index: 5;
             filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.5));
         }
 
-        /* --- Kontrol Bölümü Stilleri --- */
         .controls {
             display: flex;
             flex-direction: column;
@@ -200,7 +194,7 @@
             border-color: var(--tg-theme-button-color);
             box-shadow: 0 0 10px var(--tg-theme-button-color);
         }
-        .bet-option-button:disabled {
+         .bet-option-button:disabled {
              opacity: 0.6;
              cursor: not-allowed;
          }
@@ -256,7 +250,6 @@
             opacity: 0.7;
         }
 
-        /* --- Sonuç Alanı Stilleri --- */
         .sonuc {
             margin-top: 20px;
             padding: 12px 20px;
@@ -294,26 +287,24 @@
             box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
         }
 
-        /* Mobil cihazlar için küçük ayarlamalar */
         @media (max-width: 400px) {
             :root {
                 --wheel-size: 250px;
-                --number-size: 40px; /* Mobil için dilim genişliği */
-                --number-font-size: 18px; /* Mobil için ana font boyutu */
+                --number-size: 40px;
+                --number-font-size: 18px;
             }
             .bakiye { font-size: 18px; }
             .spin-button { font-size: 18px; padding: 12px 25px;}
             .bahis-input { font-size: 14px; padding: 10px;}
             .bet-option-button { font-size: 12px; padding: 10px 5px;}
             .sonuc { font-size: 14px; }
-            .winning-number-display { font-size: 28px; }
-             /* Mobil için sayı span font boyutu */
+            .wheel-center { width: 50px; height: 50px; } /* Mobil için merkez boyut */
+            .winning-number-display { font-size: 26px; }
              .number-slot span {
-                 font-size: calc(var(--number-font-size) * 0.8); /* Daha da küçülebilir */
-                 margin-top: 6px; /* Boşluğu ayarla */
+                 font-size: calc(var(--number-font-size) * 0.8);
+                 margin-top: 6px;
              }
         }
-
     </style>
 </head>
 <body>
@@ -360,13 +351,12 @@
             document.documentElement.style.setProperty('--tg-theme-button-color', webApp.themeParams.button_color || '#3e83e0');
             document.documentElement.style.setProperty('--tg-theme-button-text-color', webApp.themeParams.button_text_color || '#ffffff');
             document.documentElement.style.setProperty('--tg-theme-secondary-bg-color', webApp.themeParams.secondary_bg_color || '#2a2a2a');
-             // Ana arkaplanı da ayarla
              document.body.style.backgroundColor = webApp.themeParams.bg_color || '#1a1a1a';
              document.body.style.color = webApp.themeParams.text_color || '#ffffff';
         }
 
         webApp.onEvent('themeChanged', applyThemeColors);
-        applyThemeColors(); // İlk yüklemede uygula
+        applyThemeColors();
 
         // Oyun Elemanları
         const wheel = document.getElementById('wheel');
@@ -374,16 +364,16 @@
         const spinButton = document.getElementById('spin');
         const balanceDisplay = document.getElementById('balance');
         const resultDisplay = document.getElementById('result');
-        const winningNumberDisplay = document.getElementById('winning-number-display'); // Hala seçili ama görseli CSS ile gizlendi
+        const winningNumberDisplay = document.getElementById('winning-number-display');
         const bettingOptionButtons = document.querySelectorAll('.bet-option-button');
 
         // Oyun Değişkenleri
         let balance = 1000;
         let isSpinning = false;
-        let selectedBetType = null; // 'kırmızı', 'siyah', 'yeşil', 'tek', 'çift'
-        let currentAngle = 0; // Tekerleğin mevcut açısı
+        let selectedBetType = null;
+        let currentAngle = 0;
 
-        // Rulet Numaraları ve Renkleri (Avrupa Ruleti Düzeni)
+        // Rulet Numaraları ve Renkleri
         const numbersData = [
             { number: 0, color: 'yeşil' }, { number: 32, color: 'kırmızı' }, { number: 15, color: 'siyah' },
             { number: 19, color: 'kırmızı' }, { number: 4, color: 'siyah' }, { number: 21, color: 'kırmızı' },
@@ -402,18 +392,17 @@
         const totalNumbers = numbersData.length;
         const anglePerSlot = 360 / totalNumbers;
 
-        // Tekerleği Oluştur (Sayı oryantasyonu düzeltildi)
+        // Tekerleği Oluştur
         numbersData.forEach((data, index) => {
             const angle = index * anglePerSlot;
             const slot = document.createElement('div');
             slot.className = `number-slot ${data.color}`;
-            slot.style.transform = `rotate(${angle}deg)`; // Dilimi döndür
+            slot.style.transform = `rotate(${angle}deg)`;
             slot.dataset.number = data.number;
             slot.dataset.color = data.color;
 
             const numberSpan = document.createElement('span');
-            // Sayıyı dilimin tersi yönde döndürerek düz durmasını sağla
-            numberSpan.style.transform = `rotate(-${angle}deg)`;
+            numberSpan.style.transform = `rotate(-${angle}deg)`; // Sayıyı düz tut
             numberSpan.style.display = 'inline-block';
             numberSpan.textContent = data.number;
             slot.appendChild(numberSpan);
@@ -435,10 +424,12 @@
              resultDisplay.className = 'sonuc';
         }
 
-        // Kazanan numarayı ortada (arka plansız) gösterir
+        // Kazanan numarayı ortadaki yeşil alanda gösterir
         function showWinningNumber(number, color) {
             winningNumberDisplay.textContent = number;
-            winningNumberDisplay.style.color = color === 'yeşil' ? '#2ecc71' : (color === 'kırmızı' ? '#e74c3c' : '#ecf0f1'); // Yeşil/Kırmızı/Siyah renk
+            // Yazı rengini gelen renge göre ayarlayalım (yeşil hariç)
+             winningNumberDisplay.style.color = '#ffffff'; // Varsayılan beyaz
+             // winningNumberDisplay.style.color = color === 'yeşil' ? '#2ecc71' : (color === 'kırmızı' ? '#e74c3c' : '#ffffff'); // Opsiyonel: Sayı rengi
             winningNumberDisplay.style.display = 'block';
         }
 
@@ -489,7 +480,6 @@
                 return;
             }
 
-            // Oyun Başlıyor
             isSpinning = true;
             spinButton.disabled = true;
             bettingOptionButtons.forEach(btn => btn.disabled = true);
@@ -500,24 +490,20 @@
             balance -= bet;
             updateBalance();
 
-            // 1. Rastgele kazanan indeksi ve veriyi seç
             const winningIndex = Math.floor(Math.random() * totalNumbers);
             const winningData = numbersData[winningIndex];
             const winningNumber = winningData.number;
             const winningColor = winningData.color;
 
-            // 2. Hedef açıyı hesapla
             const randomOffset = (Math.random() - 0.5) * anglePerSlot * 0.8;
             const numberOfSpins = 5 + Math.floor(Math.random() * 5);
             const targetAngle = -(winningIndex * anglePerSlot + anglePerSlot / 2) + randomOffset;
             const totalRotation = currentAngle + (numberOfSpins * 360) + (targetAngle - (currentAngle % 360));
 
-            // 3. Tekerleği döndür
             wheel.style.transition = 'transform 5s cubic-bezier(0.2, 0.8, 0.2, 1)';
             wheel.style.transform = `rotate(${totalRotation}deg)`;
             currentAngle = totalRotation;
 
-             // Titreşim simülasyonu
             let intervalCount = 0;
             const vibrationInterval = setInterval(() => {
                 webApp.HapticFeedback.selectionChanged();
@@ -525,12 +511,10 @@
                 if(intervalCount > 40) clearInterval(vibrationInterval);
             }, 100);
 
-            // 4. Sonucu Gecikmeli Göster
             setTimeout(() => {
                  clearInterval(vibrationInterval);
-                 showWinningNumber(winningNumber, winningColor); // Ortadaki (arka plansız) göstergeyi aktifleştir
+                 showWinningNumber(winningNumber, winningColor); // Kazananı ortada göster
 
-                // Kazanma/Kaybetme Mantığı
                 let isWin = false;
                 let winMultiplier = 0;
 
@@ -544,7 +528,6 @@
                     else if (selectedBetType === 'çift' && isEven) { isWin = true; winMultiplier = 2; }
                 }
 
-                 // Sonucu Hesapla ve Göster
                 if (isWin) {
                     const winAmount = bet * winMultiplier;
                     balance += winAmount;
@@ -558,9 +541,9 @@
                 updateBalance();
                 isSpinning = false;
                 spinButton.disabled = false;
-                bettingOptionButtons.forEach(btn => btn.disabled = false);
+                 bettingOptionButtons.forEach(btn => btn.disabled = false);
 
-            }, 5100); // CSS transition süresinden biraz fazla
+            }, 5100);
         });
 
         // Başlangıç Durumu
@@ -568,7 +551,6 @@
         resultDisplay.textContent = 'Bahis türü seçip çevirin!';
         resultDisplay.className = 'sonuc show info';
 
-        // Sayfa yüklendiğinde
         window.onload = () => {
             updateBalance();
             applyThemeColors();
